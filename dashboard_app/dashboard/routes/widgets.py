@@ -1,0 +1,134 @@
+from fastapi import APIRouter, HTTPException, Body, Depends, Path
+from sqlalchemy import text
+import asyncio
+from datetime import datetime, date
+from dashboard_app.dashboard.schemas.classes import WidgetChoice, Choice
+from dashboard_app.dashboard.db.db_engine import engine
+from dashboard_app.dashboard.security.auth import get_current_user
+
+widgets_router = APIRouter(prefix="/widgets", tags=["Виджеты"])
+
+def choice_func(choice: WidgetChoice) -> str:
+    if choice == WidgetChoice.nickname:
+        return "nickname"
+    elif choice == WidgetChoice.weather:
+        return "weather"
+    elif choice == WidgetChoice.traffic:
+        return "traffic"
+    elif choice == WidgetChoice.date:
+        return "date"
+    elif choice == WidgetChoice.time:
+        return "time"
+    else:
+        raise HTTPException(status_code=400, detail="Виджет не может быть добавлен")
+    return
+
+
+@widgets_router.put("/change")
+async def add_widgets(
+    page: int = Body(..., description="Укажите номер страницы"),
+    widget: WidgetChoice = Body(..., description="Добавьте новый виджет"),
+    choice: Choice = Body(..., description="Выберите действие"),
+    current_user_id: int = Depends(get_current_user)
+):
+    
+    widget = choice_func(widget)
+    choice = (choice == Choice.add)
+        
+    async with engine.begin() as conn:
+        res = await conn.execute(text(
+            f"""
+            UPDATE pages
+            SET {widget} = :choice
+            WHERE user_id = :user_id and page = :page
+            """
+        ), {"user_id": current_user_id, "page": page, "choice": choice})
+    
+        if res.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Не удалось изменить виджет")
+        
+    if choice:
+        return {"Виджет": "добавлен"}
+    return {"Виджет": "удален"}
+
+@widgets_router.post("/todo/creation")
+async def create_todo(
+    number: int             = Body(..., description="Придумайте номер задаче", ge=1),
+    task: str               = Body(..., description="Опишите задачу"),
+    current_user_id: int    = Depends(get_current_user)
+):
+    async with engine.begin() as conn:
+        res = await conn.execute(text(
+            """
+            INSERT INTO todos (user_id, task, number)
+            VALUES (:user_id, :task, :number)
+            ON CONFLICT (user_id, number) DO NOTHING
+            """
+        ), {"user_id": current_user_id, "task": task, "number": number})
+
+        if res.rowcount == 0:
+            raise HTTPException(status_code=409, detail="Номер занят")
+    
+    return {"Задача": "добавлена"}
+
+@widgets_router.delete("/todo/{number}")
+async def delete_todo(
+    number: int = Path(..., description="Номер задачи"),
+    current_user_id: int = Depends(get_current_user)
+):
+    async with engine.begin() as conn:
+        res = await conn.execute(text(
+            """
+            DELETE FROM todos
+            WHERE user_id = :user_id AND number = :number
+            """
+        ), {"user_id": current_user_id, "number": number})
+
+        if res.rowcount == 0:
+            raise HTTPException(status_code=409, detail="Задачи не существует")
+    
+    return {"Задача": "удалена"}
+
+@widgets_router.post("/diet/creation")
+async def create_diet(
+    diet_date: date         = Body(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
+    breakfast: str | None   = Body(None, description="Завтрак"),
+    lunch: str | None       = Body(None, description="Обед"),
+    dinner: str | None      = Body(None, description="Ужин"),
+    current_user_id: int    = Depends(get_current_user)
+):
+    async with engine.begin() as conn:
+        res = await conn.execute(text(
+            """
+            INSERT INTO diets (user_id, date, breakfast, lunch, dinner)
+            VALUES (:user_id, :date, :breakfast, :lunch, :dinner)
+            ON CONFLICT (user_id, date) DO NOTHING
+            """
+        ), {"user_id": current_user_id, "date": diet_date, "breakfast": breakfast, "lunch": lunch, "dinner": dinner})
+
+        if res.rowcount == 0:
+            raise HTTPException(status_code=409, detail="Дата занята другим рационом")
+    
+    return {"Дневной рацион": "добавлен"}
+
+@widgets_router.delete("/diet/deletion")
+async def delete_diet(
+    diet_date: date         = Body(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
+    current_user_id: int    = Depends(get_current_user)
+):
+    async with engine.begin() as conn:
+        res = await conn.execute(text(
+            """
+            DELETE FROM diets
+            WHERE user_id = :user_id AND date = :date
+            """
+        ), {"user_id": current_user_id, "date": diet_date})
+
+        if res.rowcount == 0:
+            raise HTTPException(status_code=404, detail="В этот день рациона не запланирован")
+    
+    return {"Рацион": "удален"}
+
+
+
+    
