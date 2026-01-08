@@ -21,7 +21,7 @@ async def create_user(userinfo: UserData):
         async with engine.begin() as connection:
             await connection.execute(text(
                 """
-                INSERT INTO users (username, secretpass) VALUES(:username, :secretpass)
+                INSERT INTO users (username, secretpass) VALUES (:username, :secretpass)
                 """
             ), {"username": userinfo.username, "secretpass": hashed_pass})
 
