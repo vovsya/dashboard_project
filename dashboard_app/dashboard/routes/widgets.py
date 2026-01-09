@@ -116,7 +116,7 @@ async def create_diet(
 
 @widgets_router.delete("/diet/{diet_date}")
 async def delete_diet(
-    diet_date: date         = Body(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
+    diet_date: date         = Path(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
     current_user_id: int    = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
