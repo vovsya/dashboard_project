@@ -55,18 +55,19 @@ async def add_widgets(
 
 @widgets_router.post("/todo/creation")
 async def create_todo(
-    number: int             = Body(..., description="Придумайте номер задаче", ge=1),
-    task: str               = Body(..., description="Опишите задачу"),
+    number: int             = Form(..., description="Придумайте номер задаче", ge=1),
+    task: str               = Form(..., description="Опишите задачу"),
+    date: datetime.date     = Form(..., description="Дата задачи"),
     current_user_id: int    = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
         res = await conn.execute(text(
             """
-            INSERT INTO todos (user_id, task, number)
-            VALUES (:user_id, :task, :number)
+            INSERT INTO todos (user_id, task, number, date)
+            VALUES (:user_id, :task, :number, :date)
             ON CONFLICT (user_id, number) DO NOTHING
             """
-        ), {"user_id": current_user_id, "task": task, "number": number})
+        ), {"user_id": current_user_id, "task": task, "number": number, "date": date})
 
         if res.rowcount == 0:
             raise HTTPException(status_code=409, detail="Номер занят")
