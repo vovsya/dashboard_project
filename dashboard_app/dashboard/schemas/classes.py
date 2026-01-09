@@ -16,6 +16,8 @@ class WidgetChoice(str, Enum):
     date        = "Дата"
     traffic     = "Пробки"
     currencies  = "Курсы валют"
+    diet        = "Рацион на день"
+    todo        = "Список дел"
 
 class Choice(str, Enum):
     add     = "Добавить виджет"
