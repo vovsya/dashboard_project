@@ -19,6 +19,8 @@ def choice_func(choice: WidgetChoice) -> str:
         return "date"
     elif choice == WidgetChoice.time:
         return "time"
+    elif choice == WidgetChoice.currencies:
+        return "currencies"
     else:
         raise HTTPException(status_code=400, detail="Виджет не может быть добавлен")
     return
