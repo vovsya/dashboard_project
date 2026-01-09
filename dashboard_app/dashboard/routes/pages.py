@@ -4,7 +4,7 @@ from dashboard_app.dashboard.security.auth import get_current_user
 from sqlalchemy import text
 from dashboard_app.dashboard.db.db_engine import engine
 from dashboard_app.dashboard.utils.apicalls import get_weather, get_currencies
-from datetime import datetime
+from datetime import date
 import random
 
 
@@ -83,6 +83,30 @@ async def view_page(
             ), {"id": current_user_id})
             nickname = nickname.scalar_one_or_none()
             page_widgets["Имя пользователя"] = nickname
+        
+        todos = await conn.execute(text(
+            """
+            SELECT number, task FROM todos
+            WHERE user_id = :user_id AND date = :today
+            """
+        ), {"user_id": current_user_id, "today": date.today()})
+
+        todos = todos.mappings().all()
+        if todos:
+            page_widgets["Задачи"] = todos
+        
+        diet = await conn.execute(text(
+            """
+            SELECT breakfast, lunch, dinner FROM diets
+            WHERE date = :today AND user_id = :user_id
+            """
+        ), {"user_id": current_user_id, "today": date.today()})
+
+        diet = diet.mappings().first()
+        if diet:
+            page_widgets["Рацион"] = dict(diet)
+
+
 
     if res["weather"]:
         page_widgets["Погода"] = await get_weather()
