@@ -57,7 +57,7 @@ async def add_widgets(
 async def create_todo(
     number: int             = Form(..., description="Придумайте номер задаче", ge=1),
     task: str               = Form(..., description="Опишите задачу"),
-    date: datetime.date     = Form(..., description="Дата задачи"),
+    date: datetime.date     = Form(..., description="Дата задачи в формате YEAR-MM-DD", example="2025-02-28"),
     current_user_id: int    = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
