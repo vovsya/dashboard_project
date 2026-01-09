@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Body, Depends, Path
+from fastapi import APIRouter, HTTPException, Body, Depends, Path, Form
 from sqlalchemy import text
 import asyncio
 from datetime import datetime, date
@@ -26,9 +26,9 @@ def choice_func(choice: WidgetChoice) -> str:
 
 @widgets_router.put("/change")
 async def add_widgets(
-    page: int = Body(..., description="Укажите номер страницы"),
-    widget: WidgetChoice = Body(..., description="Добавьте новый виджет"),
-    choice: Choice = Body(..., description="Выберите действие"),
+    page: int = Form(..., description="Укажите номер страницы"),
+    widget: WidgetChoice = Form(..., description="Добавьте новый виджет"),
+    choice: Choice = Form(..., description="Выберите действие"),
     current_user_id: int = Depends(get_current_user)
 ):
     
