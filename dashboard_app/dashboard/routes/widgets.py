@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Body, Depends, Path, Form
 from sqlalchemy import text
 import asyncio
-from datetime import datetime, date
+from datetime import date
 from dashboard_app.dashboard.schemas.classes import WidgetChoice, Choice
 from dashboard_app.dashboard.db.db_engine import engine
 from dashboard_app.dashboard.security.auth import get_current_user
