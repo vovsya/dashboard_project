@@ -57,7 +57,7 @@ async def add_widgets(
 async def create_todo(
     number: int             = Form(..., description="Придумайте номер задаче", ge=1),
     task: str               = Form(..., description="Опишите задачу"),
-    date: datetime.date     = Form(..., description="Дата задачи в формате YEAR-MM-DD", example="2025-02-28"),
+    task_date: date     = Form(..., description="Дата задачи в формате YEAR-MM-DD", example="2025-02-28"),
     current_user_id: int    = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
@@ -67,7 +67,7 @@ async def create_todo(
             VALUES (:user_id, :task, :number, :date)
             ON CONFLICT (user_id, number) DO NOTHING
             """
-        ), {"user_id": current_user_id, "task": task, "number": number, "date": date})
+        ), {"user_id": current_user_id, "task": task, "number": number, "date": task_date})
 
         if res.rowcount == 0:
             raise HTTPException(status_code=409, detail="Номер занят")
