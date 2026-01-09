@@ -62,7 +62,7 @@ async def view_page(
     async with engine.begin() as conn:
         res = await conn.execute(text(
             """
-            SELECT nickname, weather, time, date, traffic, currencies 
+            SELECT nickname, weather, time, date, traffic, currencies, todo, diet
             FROM pages
             WHERE page = :page AND user_id = :user_id
             """
