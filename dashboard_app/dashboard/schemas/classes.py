@@ -10,11 +10,12 @@ class Token(BaseModel):
     token_type: str
 
 class WidgetChoice(str, Enum):
-    nickname    = "Добавить ваш ник"
-    weather     = "Добавить погоду"
-    time        = "Добавить время"
-    date        = "Добавить дату"
-    traffic     = "Добавить пробки"
+    nickname    = "Никнейм"
+    weather     = "Погода"
+    time        = "Время"
+    date        = "Дата"
+    traffic     = "Пробки"
+    currencies  = "Курсы валют"
 
 class Choice(str, Enum):
     add     = "Добавить виджет"
