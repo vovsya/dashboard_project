@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Path, Body
+from fastapi import APIRouter, HTTPException, Depends, Path, Body, Query
 import asyncio
 from dashboard_app.dashboard.security.auth import get_current_user
 from sqlalchemy import text
@@ -14,7 +14,7 @@ pages_router = APIRouter(prefix="/pages", tags=["Страницы"])
 @pages_router.post("/creation")
 async def page_creation(
     current_user_id = Depends(get_current_user),
-    page: int = Body(..., description="Придумайте номер новой страницы")
+    page: int = Query(..., description="Придумайте номер новой страницы")
 ):
     async with engine.begin() as conn:
 
