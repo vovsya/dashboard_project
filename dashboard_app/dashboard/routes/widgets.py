@@ -68,7 +68,8 @@ async def create_todo(
         res = await conn.execute(text(
             """
             INSERT INTO todos (user_id, task, number, date)
-            VALUES (:user_id, :task, :number, :date)
+            SELECT id, :task, :number, :date FROM users
+            WHERE id = :user_id
             ON CONFLICT (user_id, number) DO NOTHING
             """
         ), {"user_id": current_user_id, "task": task, "number": number, "date": task_date})
@@ -108,7 +109,8 @@ async def create_diet(
         res = await conn.execute(text(
             """
             INSERT INTO diets (user_id, date, breakfast, lunch, dinner)
-            VALUES (:user_id, :date, :breakfast, :lunch, :dinner)
+            SELECT id, :date, :breakfast, :lunch, :dinner FROM users
+            WHERE id = :user_id
             ON CONFLICT (user_id, date) DO NOTHING
             """
         ), {"user_id": current_user_id, "date": diet_date, "breakfast": breakfast, "lunch": lunch, "dinner": dinner})
