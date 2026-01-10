@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 
 
 dashboard_app = FastAPI(
-    title="Дашборд-приложение async FastAPI+PostgreSQL", 
+    title="Дашборд-приложение async FastAPI+PostgreSQL https://github.com/vovsya/dashboard_project", 
     description="Вы можете создавать странички и добавлять на них виджеты - Погода и курсы валют изменяются в реальном времени"
 
 )
