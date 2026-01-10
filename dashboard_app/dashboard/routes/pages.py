@@ -21,13 +21,14 @@ async def page_creation(
         update = await conn.execute(text(
             """
             INSERT INTO pages (user_id, page)
-            VALUES (:user_id, :page)
-            ON CONFLICT DO NOTHING
+            SELECT id, :page FROM USERS
+            WHERE id = :id
+            ON CONFLICT (user_id, pages) DO NOTHING
             """
-        ), {"user_id": current_user_id, "page": page})
+        ), {"id": current_user_id, "page": page})
 
         if update.rowcount == 0:
-            raise HTTPException(status_code=409, detail="Вы уже используете страницу с таким номером")
+            raise HTTPException(status_code=409, detail="Невозможно добавить страницу")
     
     return {"Страница": "добавлена"}
 
@@ -37,10 +38,6 @@ async def page_deletion(
     current_user_id = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
-
-        await conn.execute(text(
-            """SELECT pg_advisory_xact_lock(:user_id)"""
-        ), {"user_id": current_user_id})
 
         res = await conn.execute(text(
             """
