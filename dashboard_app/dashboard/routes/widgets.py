@@ -75,7 +75,7 @@ async def create_todo(
         ), {"user_id": current_user_id, "task": task, "number": number, "date": task_date})
 
         if res.rowcount == 0:
-            raise HTTPException(status_code=409, detail="Номер занят")
+            raise HTTPException(status_code=409, detail="Не удалось добавить задачу")
     
     return {"Задача": "добавлена"}
 
@@ -116,7 +116,7 @@ async def create_diet(
         ), {"user_id": current_user_id, "date": diet_date, "breakfast": breakfast, "lunch": lunch, "dinner": dinner})
 
         if res.rowcount == 0:
-            raise HTTPException(status_code=409, detail="Дата занята другим рационом")
+            raise HTTPException(status_code=409, detail="Не удалось добавить рацион")
     
     return {"Дневной рацион": "добавлен"}
 

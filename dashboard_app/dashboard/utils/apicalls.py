@@ -42,15 +42,14 @@ async def get_currencies() -> dict:
     
     async with httpx.AsyncClient() as client:
         res = await client.get(
-            "https://api.frankfurter.dev/v1/latest",
-            params={
-                "base": "RUB",
-                "symbols": "USD,EUR,GBP"
-            }
+            "https://open.er-api.com/v6/latest/RUB"
         )
 
         res.raise_for_status()
         res = res.json()
-        prices = res["rates"]
+        res = res.get("rates")
     
-    return prices
+    return {
+        "USD": f"{(1 / rates['USD']):.2f} RUB",
+        "EUR": f"{(1 / rates['EUR']):.2f} RUB",
+    }
