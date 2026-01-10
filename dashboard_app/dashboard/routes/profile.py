@@ -123,23 +123,23 @@ async def delete_profile(
         await connection.execute(text(
             """
             DELETE FROM pages
-            WHERE user_id = :id;
+            WHERE user_id = :user_id;
             """
-        ), {"id": current_user_id})
+        ), {"user_id": current_user_id})
 
         await connection.execute(text(
             """
             DELETE FROM todos
             WHERE user_id = :user_id
             """
-        ), {"id": current_user_id})
+        ), {"user_id": current_user_id})
 
         await connection.execute(text(
             """
             DELETE FROM diets
             WHERE user_id = :user_id
             """
-        ), {"id": current_user_id})
+        ), {"user_id": current_user_id})
 
         await connection.execute(text(
             """
