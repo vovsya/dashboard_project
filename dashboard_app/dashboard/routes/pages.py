@@ -124,5 +124,30 @@ async def view_page(
     
     return page_widgets
 
+@pages_router.put("/{page}")
+async def clear_page(
+    page: int               = Path(..., description="Номер страницы"),
+    current_user_id: int    = Depends(get_current_user)
+):
+    async with engine.begin() as conn:
+
+        await conn.execute(text(
+            """
+            UPDATE pages
+            SET 
+                nickname =      FALSE,
+                todo =          FALSE,
+                diet =          FALSE,
+                weather =       FALSE, 
+                "time" =          FALSE,  
+                "date" =          FALSE,
+                traffic =       FALSE, 
+                currencies =    FALSE
+            WHERE user_id = :user_id AND page = :page
+            """
+        ), {"user_id": current_user_id, "page": page})
+    
+    return {"Страница": "очищена"}
+
 
 
