@@ -31,7 +31,7 @@ def choice_func(choice: WidgetChoice) -> str:
 
 
 @widgets_router.put("/change")
-async def add_widgets(
+async def change_widgets(
     page: int = Form(..., description="Укажите номер страницы"),
     widget: WidgetChoice = Form(..., description="Добавьте новый виджет"),
     choice: Choice = Form(..., description="Выберите действие"),
