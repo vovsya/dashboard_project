@@ -23,7 +23,7 @@ async def page_creation(
             INSERT INTO pages (user_id, page)
             SELECT id, :page FROM USERS
             WHERE id = :id
-            ON CONFLICT (user_id, pages) DO NOTHING
+            ON CONFLICT (user_id, page) DO NOTHING
             """
         ), {"id": current_user_id, "page": page})
 
