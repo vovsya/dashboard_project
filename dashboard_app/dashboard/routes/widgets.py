@@ -98,7 +98,7 @@ async def delete_todo(
 
 @widgets_router.post("/diet/creation")
 async def create_diet(
-    diet_date: date         = Body(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
+    diet_date: date         = Body(..., description="Введите дату рациона в формате YEAR-MM-DD"),
     breakfast: str | None   = Body(None, description="Завтрак"),
     lunch: str | None       = Body(None, description="Обед"),
     dinner: str | None      = Body(None, description="Ужин"),
@@ -120,7 +120,7 @@ async def create_diet(
 
 @widgets_router.delete("/diet/{diet_date}")
 async def delete_diet(
-    diet_date: date         = Path(..., description="Введите дату рациона в формате YEAR-MM-DD", example="2025-02-28"),
+    diet_date: date         = Path(..., description="Введите дату рациона в формате YEAR-MM-DD"),
     current_user_id: int    = Depends(get_current_user)
 ):
     async with engine.begin() as conn:
