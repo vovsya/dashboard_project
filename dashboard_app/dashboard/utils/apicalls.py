@@ -50,6 +50,6 @@ async def get_currencies() -> dict:
         res = res.get("rates")
     
     return {
-        "USD": f"{(1 / rates['USD']):.2f} RUB",
-        "EUR": f"{(1 / rates['EUR']):.2f} RUB",
+        "USD": f"{(1 / res['USD']):.2f} RUB",
+        "EUR": f"{(1 / res['EUR']):.2f} RUB",
     }
