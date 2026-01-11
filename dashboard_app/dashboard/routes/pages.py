@@ -111,10 +111,10 @@ async def view_page(
         page_widgets["Погода"] = await get_weather()
         
     if res["time"]:
-        page_widgets["Время"] = datetime.now().time()
+        page_widgets["Время"] = date.now().time()
         
     if res["date"]:
-        page_widgets["Дата"] = datetime.now().date()
+        page_widgets["Дата"] = date.now().date()
         
     if res["traffic"]:
         page_widgets["Пробки"] = str(random.randint(1, 10)) + " баллов"
