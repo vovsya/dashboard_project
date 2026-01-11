@@ -4,7 +4,7 @@ from dashboard_app.dashboard.security.auth import get_current_user
 from sqlalchemy import text
 from dashboard_app.dashboard.db.db_engine import engine
 from dashboard_app.dashboard.utils.apicalls import get_weather, get_currencies
-from datetime import date
+from datetime import date, datetime
 import random
 
 
@@ -111,10 +111,10 @@ async def view_page(
         page_widgets["Погода"] = await get_weather()
         
     if res["time"]:
-        page_widgets["Время"] = datetime.datetime.now().time()
+        page_widgets["Время"] = datetime.now().time()
         
     if res["date"]:
-        page_widgets["Дата"] = datetime.datetime.now().date()
+        page_widgets["Дата"] = datetime.now().date()
         
     if res["traffic"]:
         page_widgets["Пробки"] = str(random.randint(1, 10)) + " баллов"
