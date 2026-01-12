@@ -54,12 +54,21 @@ async def get_profile_info(current_user_id: int = Depends(get_current_user)):
         data = await connection.execute(text(
             """
             SELECT u.id, u.username, p.page FROM users u
-            INNER JOIN pages p ON p.user_id = u.id
+            LEFT JOIN pages p ON p.user_id = u.id
             WHERE u.id = :id
+            ORDER BY p.page
             """
         ), {"id": current_user_id})
         
         data = data.mappings().all()
+
+        if not data:
+            raise HTTPException(status_code=404, detail="Пользователь не найден")
+        
+        data = {
+            "id": data[0]["id"],
+            "username": data[0]["username"],
+            "pages": [row["page"] for row in data if row["page"] is not None]}
     
     return {"данные пользователя": data}
 
