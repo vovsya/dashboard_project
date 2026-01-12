@@ -55,11 +55,11 @@ async def get_profile_info(current_user_id: int = Depends(get_current_user)):
             """
             SELECT u.id, u.username, p.page FROM users u
             INNER JOIN pages p ON p.user_id = u.id
-            WHERE id = :id
+            WHERE u.id = :id
             """
         ), {"id": current_user_id})
         
-        data = data.mappings().first()
+        data = data.mappings().all()
     
     return {"данные пользователя": data}
 
