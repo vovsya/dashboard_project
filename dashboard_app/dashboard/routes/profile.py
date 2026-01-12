@@ -53,7 +53,9 @@ async def get_profile_info(current_user_id: int = Depends(get_current_user)):
     async with engine.begin() as connection:
         data = await connection.execute(text(
             """
-            SELECT id, username FROM users WHERE id = :id
+            SELECT u.id, u.username, p.page FROM users u
+            INNER JOIN pages p ON p.user_id = u.id
+            WHERE id = :id
             """
         ), {"id": current_user_id})
         
